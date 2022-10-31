@@ -16,26 +16,71 @@ export const update = async (req, res, next) => {
     }
 }
 
-export const deleteUser = (req, res, next) => {
-    res.json("its working");
+export const deleteUser = async (req, res, next) => {
+    if (req.params.id === req.user.id) {
+        try {
+            await User.findByIdAndDelete(req.params.id)
+            res.status(200).json("User has been deleted...");
+        } catch (error) {
+            next(error);
+        }
+    } else {
+        return next(createError(403, "You can delete only your account!"));
+    }
 }
 
-export const getUser = (req, res, next) => {
-    res.json("its working");
+export const getUser = async (req, res, next) => {
+    try {
+
+        const user = await User.findById(req.params.id);
+        const { password, updatedAt, ...other } = user._doc;
+        res.status(200).json(other);
+
+    } catch (error) {
+        next(error);
+    }
 }
 
-export const subscribe = (req, res, next) => {
-    res.json("its working");
+export const subscribe = async (req, res, next) => {
+    try {
+        await User.findByIdAndUpdate(req.user.id, {
+            $push: { subscribedUsers: req.params.id },
+        });
+        await User.findByIdAndUpdate(req.params.id, {
+            $inc: { subscribers: 1 },
+        });
+        res.status(200).json("Subscription successful!");
+    } catch (error) {
+        next(error);
+    }
 }
 
-export const unsubscribe = (req, res, next) => {
-    res.json("its working");
+export const unsubscribe = async (req, res, next) => {
+    try {
+        await User.findByIdAndUpdate(req.user.id, {
+            $pull: { subscribedUsers: req.params.id },
+        });
+        await User.findByIdAndUpdate(req.params.id, {
+            $inc: { subscribers: -1 },
+        });
+        res.status(200).json("Unsubscription successful!");
+    } catch (error) {
+        next(error);
+    }
 }
 
-export const like = (req, res, next) => {
-    res.json("its working");
+export const like = async (req, res, next) => {
+    try {
+
+    } catch (error) {
+        next(error);
+    }
 }
 
-export const dislike = (req, res, next) => {
-    res.json("its working");
+export const dislike = async (req, res, next) => {
+    try {
+
+    } catch (error) {
+        next(error);
+    }
 }
