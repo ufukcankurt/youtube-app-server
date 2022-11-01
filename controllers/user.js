@@ -1,5 +1,6 @@
 import { createError } from "../error.js";
 import User from "../models/User.js";
+import Video from "../models/Video.js";
 
 export const update = async (req, res, next) => {
     if (req.params.id === req.user.id) {
@@ -70,16 +71,28 @@ export const unsubscribe = async (req, res, next) => {
 }
 
 export const like = async (req, res, next) => {
+    const id = req.user.id
+    const videoId = req.params.videoId
     try {
-
+        await Video.findByIdAndUpdate(videoId, {
+            $addToSet: { likes: id }, // $addToSet: { likes: id } is used to add the id to the array only if it is not already present in the array.
+            $pull: { dislikes: id }, // $pull: { dislikes: id } is used to remove the id from the array if it is present in the array.
+        })
+        res.status(200).json("Video has been liked!");
     } catch (error) {
         next(error);
     }
 }
 
 export const dislike = async (req, res, next) => {
+    const id = req.user.id
+    const videoId = req.params.videoId
     try {
-
+        await Video.findByIdAndUpdate(videoId, {
+            $addToSet: { dislikes: id },
+            $pull: { likes: id },
+        })
+        res.status(200).json("Video has been disliked!");
     } catch (error) {
         next(error);
     }
