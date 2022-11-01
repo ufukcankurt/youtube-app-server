@@ -1,14 +1,14 @@
 import express from "express";
-import { addVideo, addView, getByTag, random, search, sub, trend } from "../controllers/video.js";
+import { addVideo, addView, deleteVideo, getByTag, getVideo, random, search, sub, trend, updateVideo } from "../controllers/video.js";
 import { verifyToken } from "../verifyToken.js";
 
 const route = express.Router();
 
 // create a video
 route.post("/", verifyToken, addVideo);
-route.put("/:id", verifyToken, addVideo);
-route.delete("/:id", verifyToken, addVideo);
-route.post("/find/:id", addVideo);
+route.put("/:id", verifyToken, updateVideo);
+route.delete("/:id", verifyToken, deleteVideo);
+route.get("/find/:id", getVideo);
 route.put("/view/:id", addView);
 route.get("/trend", trend);
 route.get("/random", random);
