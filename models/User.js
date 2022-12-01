@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
     },
     img: {
         type: String,
+        default:"https://i.pinimg.com/474x/c6/6a/73/c66a732387c737fa97526841cbdc0938.jpg",
     },
     subscribers: {
         type: Number,
